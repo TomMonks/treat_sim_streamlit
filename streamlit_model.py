@@ -23,13 +23,15 @@ examination activities. A proportion of non-trauma patients require treatment
 in a cubicle before being dicharged. '''
 
 SC_TABLE = '''
-|   | Scenario          | Description                                                          |
-|---|-------------------|----------------------------------------------------------------------|
-| 1 | As-is             | Uses default settings - represents how the system currently operates |
-| 2 | Triage + 1        | Add an additional triage bay for new patients                        |
-| 3 | Exam + 1          | Add an additional examination cubicle for the non-trauma pathway     |
-| 4 | Treat + 1         | Add an extra non-trauma treatment cubicle                            |
-| 5 | Triage+1 Exam + 1 | Combine scenarios 2 and 3.                                           |
+|   | Scenario                | Description                                                          |
+|---|-------------------------|----------------------------------------------------------------------|
+| 1 | As-is                   | Uses default settings - represents how the system currently operates |
+| 2 | Triage + 1              | Add an additional triage bay for new patients                        |
+| 3 | Exam + 1                | Add an additional examination cubicle for the non-trauma pathway     |
+| 4 | Treat + 1               | Add an extra non-trauma treatment cubicle                            |
+| 5 | Swap Exam & Treat       | Convert an exam room into a non_trauma treatment cubicle             |
+| 6 | Scenario 5 + short exam | Scenario 5 changes + examination takes 4 mins less on average        |
+
 '''
 
 def get_arrival_chart():
@@ -92,6 +94,14 @@ with st.sidebar:
                              md.DEFAULT_TRAUMA_TREAT_VAR, 0.5)
 
     st.markdown('## Non-Trauma Pathway') 
+
+    #examination mean
+    exam_mean = st.slider('Mean examination time', 0.0, 45.0, 
+                          md.DEFAULT_EXAM_MEAN, 1.0)
+    
+    exam_var = st.slider('Variance of examination time', 0.0, 15.0, 
+                          md.DEFAULT_EXAM_VAR, 0.5)
+
     # proportion of non-trauma patients that require treatment
     nontrauma_treat = st.slider('Probability non-trauma treatment', 0.0, 1.0, 
                           md.DEFAULT_NON_TRAUMA_TREAT_P)
@@ -128,6 +138,8 @@ args.nt_treat_prob = nontrauma_treat
 args.nt_treat_mean = nt_trauma_mean
 args.nt_treat_var = nt_trauma_var
 args.prob_trauma = trauma_p
+args.exam_mean = exam_mean
+args.exam_var = exam_var
 
 if st.button('Simulate treatment centre'):
     # Get results

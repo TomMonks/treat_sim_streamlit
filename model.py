@@ -394,7 +394,10 @@ class Scenario:
         self.treat_trauma_var = DEFAULT_TRAUMA_TREAT_VAR
 
         #non trauma pathway
-        self.nt_treat_prob = DEFAULT_NON_TRAUMA_TREAT_P
+        self.exam_mean = DEFAULT_EXAM_MEAN
+        self.exam_var = DEFAULT_EXAM_VAR
+
+        self.nt_treat_prob = DEFAULT_NON_TRAUMA_TREAT_P       
         self.nt_treat_mean = DEFAULT_NON_TRAUMA_TREAT_MEAN
         self.nt_treat_var = DEFAULT_NON_TRAUMA_TREAT_VAR
 
@@ -419,8 +422,8 @@ class Scenario:
                                   random_seed=self.seeds[1])
         
         # Evaluation (non-trauma only)
-        self.exam_dist = Normal(DEFAULT_EXAM_MEAN,
-                                np.sqrt(DEFAULT_EXAM_VAR),
+        self.exam_dist = Normal(self.exam_mean,
+                                np.sqrt(self.exam_var),
                                 random_seed=self.seeds[2])
         
         # Trauma/stablisation duration (trauma only)
@@ -1182,9 +1185,16 @@ def get_scenarios():
     scenarios['treat+1'] = Scenario()
     scenarios['treat+1'].n_cubicles_1 += 1
     
-    scenarios['triage+exam'] = Scenario()
-    scenarios['triage+exam'].n_triage += 1
-    scenarios['triage+exam'].n_exam += 1
+    #swap over 1 exam room for extra treat cubicle
+    scenarios['swap_exam_treat'] = Scenario()
+    scenarios['swap_exam_treat'].n_cubicles_1 += 1
+    scenarios['swap_exam_treat'].n_exam -= 1
+
+    #scenario + 3 min short mean exam times.
+    scenarios['short_exam'] = Scenario()
+    scenarios['short_exam'].n_cubicles_1 += 1
+    scenarios['short_exam'].n_exam -= 1
+    scenarios['short_exam'].exam_mean = 12.0
     
     return scenarios
 
