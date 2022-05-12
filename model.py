@@ -352,11 +352,16 @@ class Scenario:
         '''
         # sampling
         self.random_number_set = random_number_set
-        self.init_sampling()
-        
+
         # count of each type of resource
         self.init_resourse_counts()
-    
+
+        # pathway variables
+        self.init_pathway_variables()
+
+        # sampling distributions
+        self.init_sampling()
+            
     def set_random_no_set(self, random_number_set):
         '''
         Controls the random sampling 
@@ -381,6 +386,17 @@ class Scenario:
         # non-trauma (1), trauma (2) treatment cubicles
         self.n_cubicles_1 = DEFAULT_N_CUBICLES_1
         self.n_cubicles_2 = DEFAULT_N_CUBICLES_2
+
+    def init_pathway_variables(self):
+        # trauma pathway
+        self.prob_trauma = DEFAULT_PROB_TRAUMA
+        self.treat_trauma_mean = DEFAULT_TRAUMA_TREAT_MEAN
+        self.treat_trauma_var = DEFAULT_TRAUMA_TREAT_VAR
+
+        #non trauma pathway
+        self.nt_treat_prob = DEFAULT_NON_TRAUMA_TREAT_P
+        self.nt_treat_mean = DEFAULT_NON_TRAUMA_TREAT_MEAN
+        self.nt_treat_var = DEFAULT_NON_TRAUMA_TREAT_VAR
 
     def init_sampling(self):
         '''
@@ -412,27 +428,28 @@ class Scenario:
                                        random_seed=self.seeds[3])
         
         # Non-trauma treatment
-        self.nt_treat_dist = Lognormal(DEFAULT_NON_TRAUMA_TREAT_MEAN, 
-                                       np.sqrt(DEFAULT_NON_TRAUMA_TREAT_VAR),
+        self.nt_treat_dist = Lognormal(self.nt_treat_mean, 
+                                       np.sqrt(self.nt_treat_var),
                                        random_seed=self.seeds[4])
         
         # treatment of trauma patients
-        self.treat_dist = Lognormal(DEFAULT_TRAUMA_TREAT_MEAN, 
-                                    np.sqrt(DEFAULT_TRAUMA_TREAT_VAR),
+        self.treat_dist = Lognormal(self.treat_trauma_mean, 
+                                    np.sqrt(self.treat_trauma_var),
                                     random_seed=self.seeds[5])
         
         # probability of non-trauma patient requiring treatment
-        self.nt_p_treat_dist = Bernoulli(DEFAULT_NON_TRAUMA_TREAT_P, 
+        self.nt_p_treat_dist = Bernoulli(self.nt_treat_prob, 
                                          random_seed=self.seeds[6])
         
         
         # probability of non-trauma versus trauma patient
-        self.p_trauma_dist = Bernoulli(DEFAULT_PROB_TRAUMA, 
+        self.p_trauma_dist = Bernoulli(self.prob_trauma, 
                                        random_seed=self.seeds[7])
         
         # init sampling for non-stationary poisson process
         self.init_nspp()
-        
+
+            
     def init_nspp(self):
         
         # read arrival profile
