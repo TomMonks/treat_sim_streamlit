@@ -4,7 +4,7 @@
 '''
 FirstTreatment: A health clinic based in the US.
 
-**This example is based on exercise 13 from Nelson (2013) page 170.**
+This example is based on exercise 13 from Nelson (2013) page 170.
  
 Nelson. B.L. (2013). Foundations and methods of stochastic simulation.
 Patients arrive to the health clinic between 6am and 12am following a 
@@ -27,14 +27,12 @@ in a cubicle before being dicharged.
 In this model treatment of trauma and non-trauma patients is modelled seperately 
 '''
 
-
 import numpy as np
 import pandas as pd
 import itertools
 import math
 import matplotlib.pyplot as plt
-
-
+import simpy
 
 # Constants and defaults for modelling **as-is**
 
@@ -89,8 +87,7 @@ DEFAULT_N_CUBICLES_1 = 1
 # trauma pathway cubicles
 DEFAULT_N_CUBICLES_2 = 1
 
-
-# ### Simulation model run settings
+# Simulation model run settings
 
 # default random number SET
 DEFAULT_RNG_SET = None
@@ -104,7 +101,7 @@ DEFAULT_N_REPS = 5
 
 # Show the a trace of simulated events
 # not recommended when running multiple replications
-TRACE = True
+TRACE = False
 
 # Utility functions
 
@@ -519,7 +516,7 @@ class TraumaPathway:
                   f'{self.env.now:.3f}')
         
             # sample triage duration.
-            self.triage_duration = args.triage_dist.sample()
+            self.triage_duration = self.args.triage_dist.sample()
             yield self.env.timeout(self.triage_duration)
             self.triage_complete()
             
@@ -534,7 +531,7 @@ class TraumaPathway:
             self.wait_trauma = self.env.now - start_wait
             
             # sample stablisation duration.
-            self.trauma_duration = args.trauma_dist.sample()
+            self.trauma_duration = self.args.trauma_dist.sample()
             yield self.env.timeout(self.trauma_duration)
             
             self.trauma_complete()
@@ -552,7 +549,7 @@ class TraumaPathway:
                   f'{self.env.now:.3f}')
             
             # sample treatment duration.
-            self.treat_duration = args.trauma_dist.sample()
+            self.treat_duration = self.args.trauma_dist.sample()
             yield self.env.timeout(self.treat_duration)
             
             self.treatment_complete()
@@ -652,7 +649,7 @@ class NonTraumaPathway(object):
                   f'{self.env.now:.3f}')
             
             # sample triage duration.
-            self.triage_duration = args.triage_dist.sample()
+            self.triage_duration = self.args.triage_dist.sample()
             yield self.env.timeout(self.triage_duration)
             
             trace(f'triage {self.identifier} complete {self.env.now:.3f}; '
@@ -671,7 +668,7 @@ class NonTraumaPathway(object):
                   f'{self.env.now:.3f}')
             
             # sample registration duration.
-            self.reg_duration = args.reg_dist.sample()
+            self.reg_duration = self.args.reg_dist.sample()
             yield self.env.timeout(self.reg_duration)
             
             trace(f'patient {self.identifier} registered at'
@@ -691,7 +688,7 @@ class NonTraumaPathway(object):
                   f'{self.env.now:.3f}')
             
             # sample examination duration.
-            self.exam_duration = args.exam_dist.sample()
+            self.exam_duration = self.args.exam_dist.sample()
             yield self.env.timeout(self.exam_duration)
             
             trace(f'patient {self.identifier} examination complete ' 
@@ -716,7 +713,7 @@ class NonTraumaPathway(object):
                       f'{self.env.now:.3f}')
 
                 # sample treatment duration.
-                self.treat_duration = args.nt_treat_dist.sample()
+                self.treat_duration = self.args.nt_treat_dist.sample()
                 yield self.env.timeout(self.treat_duration)
 
                 trace(f'patient {self.identifier} treatment complete '
