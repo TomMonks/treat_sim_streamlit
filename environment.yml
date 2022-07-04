@@ -2,8 +2,6 @@ name: streamlit_sim
 channels:
   - conda-forge
 dependencies:
-  - joblib=0.15.1
-  - jupyterlab=3.0.9
   - matplotlib=3.3.4
   - numpy=1.19.2
   - pandas=1.2.3
