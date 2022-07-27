@@ -3,8 +3,9 @@ from PIL import Image
 import urllib
 
 INFO_1 = '''**A simple simulation model of a urgent care and treatment centre.**'''
+OVERVIEW_PATH = 'txt/overview.md'
 
-#@st.experimental_singleton(show_spinner=False)
+@st.experimental_singleton(show_spinner=True)
 def get_file_content_as_string(path):
     '''
     Download the content of a file from the GitHub Repo and return as a utf-8 string
@@ -48,3 +49,6 @@ image = Image.open('img/nihr.png')
 st.image(image)
 
 st.markdown(INFO_1)
+
+#plain english summary
+st.markdown(get_file_content_as_string(OVERVIEW_PATH))
