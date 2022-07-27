@@ -147,20 +147,3 @@ if st.button('Simulate treatment centre'):
         results = md.multiple_replications(args, n_reps = replications)
     st.success('Done!')
     st.table(results.mean().round(1))
-
-
-with st.expander('Pre-specified Scenarios', expanded=False):
-    st.markdown(INFO_2)
-    st.markdown(SC_TABLE)
-    if st.button('Run all scenarios and compare'):
-        scenarios = md.get_scenarios()
-        with st.spinner('Running scenario analysis'):
-            results = md.run_scenario_analysis(scenarios, 
-                                               md.DEFAULT_RESULTS_COLLECTION_PERIOD,
-                                               replications)
-            st.success('Done!')
-            st.table(md.scenario_summary_frame(results).round(1))
-
-
-
-    
