@@ -1,0 +1,7 @@
+id,name,n_triage,n_exam,n_nontrauma_treat,mean_exam
+1,As-is,0,0,0,0
+2,Triage + 1,1,0,0,0
+3,Exam + 1,0,1,0,0
+4,Treat + 1,0,0,1,0
+5,Swap Exam & Treat,0,1,-1,0
+6,Scenario 5 + short exam,0,1,-1,-4
