@@ -20,31 +20,46 @@ SC_TABLE = '''
 TITLE = 'Run multiple experiments'
 INFO_2 = '### Run 5 pre-specified scenarios and compare results.'
 
-
 @st.cache
 def convert_df(df):
    return df.to_csv().encode('utf-8')
+
+@st.cache(show_spinner=False)
+def run_experiments(scenarios, n_reps):
+    return  md.run_scenario_analysis(scenarios, 
+                                     md.DEFAULT_RESULTS_COLLECTION_PERIOD,
+                                     n_reps)
+
 
 st.title(TITLE)
 st.markdown(INFO_2)
 
 st.markdown(SC_TABLE)
 st.markdown('')
-if st.button('Run all scenarios and compare'):
-    scenarios = md.get_scenarios()
-    with st.spinner('Running scenario analysis'):
-        results = md.run_scenario_analysis(scenarios, 
-                                            md.DEFAULT_RESULTS_COLLECTION_PERIOD,
-                                            5)
-        st.success('Done!')
 
+# get all the scenarios
+df_results = pd.DataFrame()
+
+if st.button('Run all scenarios and compare'):
+
+    scenarios = md.get_scenarios()
+    print(scenarios)
+    
+    with st.spinner('Running scenario analysis'):
+        # will only compute once... due to cache
+        results = run_experiments(scenarios, 5)
+        st.success('Done!')
         df_results = md.scenario_summary_frame(results).round(1)
+        #with st.expander('Tabular Results', expanded=True):
+
+
         st.table(df_results)
+        print(df_results.to_csv().encode('utf-8'))
 
         # this removes the table above from the app - how to avoid?
         st.download_button(
         "Download results as .csv",
-        convert_df(df_results),
+        df_results.to_csv().encode('utf-8'),
         "experiment_results.csv",
         "text/csv",
         key='download-csv'
