@@ -17,10 +17,16 @@ SC_TABLE = '''
 
 '''
 
-INFO_2 = '**Run 5 pre-specified scenarios and compare results.**'
+TITLE = 'Run multiple experiments'
+INFO_2 = '### Run 5 pre-specified scenarios and compare results.'
 
-st.title('Batch run of model')
-st.write(INFO_2)
+
+@st.cache
+def convert_df(df):
+   return df.to_csv().encode('utf-8')
+
+st.title(TITLE)
+st.markdown(INFO_2)
 
 st.markdown(SC_TABLE)
 st.markdown('')
@@ -31,6 +37,29 @@ if st.button('Run all scenarios and compare'):
                                             md.DEFAULT_RESULTS_COLLECTION_PERIOD,
                                             5)
         st.success('Done!')
-        st.table(md.scenario_summary_frame(results).round(1))
+
+        df_results = md.scenario_summary_frame(results).round(1)
+        st.table(df_results)
+
+        # this removes the table above from the app - how to avoid?
+        st.download_button(
+        "Download results as .csv",
+        convert_df(df_results),
+        "experiment_results.csv",
+        "text/csv",
+        key='download-csv'
+        )
+
+
+
+
+    
+
+    
+
+
+    
+
+    
 
 

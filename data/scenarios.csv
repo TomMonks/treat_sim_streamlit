@@ -3,5 +3,5 @@ id,name,n_triage,n_exam,n_cubicles_1,exam_mean
 2,triage+1,1,0,0,0
 3,Exam+1,0,1,0,0
 4,Teat+1,0,0,1,0
-5,swap_exam_treat,0,1,-1,0
-6,short_exam,0,1,-1,-4
+5,swap_exam_treat,0,-1,1,0
+6,short_exam,0,-1,1,-4
