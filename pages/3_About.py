@@ -3,6 +3,7 @@ import urllib
 
 FILE = 'txt/acknowledgement.md'
 
+@st.experimental_singleton(show_spinner=True)
 def get_file_content_as_string(path):
     '''
     Download the content of a file from the GitHub Repo and return as a utf-8 string
