@@ -9,6 +9,8 @@ TITLE = 'Create custom experiments'
 INFO_3 = '### Upload custom scenarios and compare results.'
 INFO_4 = '> Notes: values are interpretted as relative changes to parameters. '
 INFO_5 = 'Resources counts are bounded at 0.'
+EXECUTE_TXT = 'Execute custom experiments'
+SHOW_TXT = 'Show results'
 
 def create_scenarios(df_scenarios):
     '''
@@ -48,7 +50,7 @@ def create_scenarios(df_scenarios):
 def convert_df(df):
    return df.to_csv().encode('utf-8')
 
-@st.cache
+@st.cache(show_spinner=False)
 def run_experiments(scenarios, n_reps):
     return  md.run_scenario_analysis(cust_scenarios, 
                                      md.DEFAULT_RESULTS_COLLECTION_PERIOD,
@@ -58,23 +60,27 @@ def run_experiments(scenarios, n_reps):
 def results_as_summary_frame(results):
     return md.scenario_summary_frame(results).round(1)
 
+if 'executed' not in st.session_state:
+    st.session_state['executed'] = False
+
 st.title(TITLE)
 st.markdown(INFO_3)
+
 
 uploaded_file = st.file_uploader("Choose a file")
 df_results = pd.DataFrame()
 if uploaded_file is not None:
     # assumes CSV
     df_scenarios = pd.read_csv(uploaded_file, index_col=0)
-    st.write('**Loaded Scenarios**')
+    st.write('**Loaded Experiments**')
     st.table(df_scenarios)
     st.markdown(INFO_4 + INFO_5)
 
     # loop through scenarios, create and run model
-
     n_reps = st.slider('Replications', 3, 30, 5, step=1)
-
-    if st.button('Run custom scenarios'):
+    
+    button_txt = SHOW_TXT if st.session_state['executed'] else EXECUTE_TXT
+    if st.button(button_txt):
 
         # create the cust scenarios based on upload
         cust_scenarios = create_scenarios(df_scenarios) 
@@ -87,17 +93,18 @@ if uploaded_file is not None:
             df_results = results_as_summary_frame(results)
             # display in the app
             st.table(df_results)
-            csv = convert_df(df_results)
+            st.session_state['executed'] = True
+            st.session_state.custom_results = convert_df(df_results)
+            
 
-
-# this removes the table above from the app - how to avoid?
-st.download_button(
-"Download results as .csv",
-df_results.to_csv().encode('utf-8'),
-"experiment_results.csv",
-"text/csv",
-key='download-csv'
-)
+        # this cycles between working and 404 error...
+        st.download_button(
+        "Download results as .csv",
+        st.session_state.custom_results,
+        "experiment_results.csv",
+        "text/csv",
+        key='download-csv'
+        )
 
     
 
