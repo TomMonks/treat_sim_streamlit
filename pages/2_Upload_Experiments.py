@@ -2,7 +2,6 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-import pyperclip
 
 # widgets and JS events from bokeh to execute copy to clipboard
 from bokeh.models.widgets import Button

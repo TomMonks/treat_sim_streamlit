@@ -2,8 +2,16 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+# widgets and JS events from bokeh to execute copy to clipboard
+from bokeh.models.widgets import Button
+from bokeh.models import CustomJS
+
+# return bokeh events from streamlit
+from streamlit_bokeh_events import streamlit_bokeh_events
 
 import model as md
+
+
 
 SC_TABLE = '''
 |   | Scenario                | Description                                                          |
@@ -31,41 +39,59 @@ def run_experiments(scenarios, n_reps):
                                      n_reps)
 
 
-st.title(TITLE)
-st.markdown(INFO_2)
+def main():
 
-st.markdown(SC_TABLE)
-st.markdown('')
+    st.title(TITLE)
+    st.markdown(INFO_2)
 
-# get all the scenarios
-df_results = pd.DataFrame()
+    st.markdown(SC_TABLE)
+    st.markdown('')
 
-if st.button('Run all scenarios and compare'):
+    # get all the scenarios
+    df_results = pd.DataFrame()
 
-    scenarios = md.get_scenarios()
-    print(scenarios)
-    
-    with st.spinner('Running scenario analysis'):
-        # will only compute once... due to cache
-        results = run_experiments(scenarios, 5)
-        st.success('Done!')
-        df_results = md.scenario_summary_frame(results).round(1)
-        #with st.expander('Tabular Results', expanded=True):
+    if st.button('Run all scenarios and compare'):
 
-
-        st.table(df_results)
-        print(df_results.to_csv().encode('utf-8'))
-
-        # this removes the table above from the app - how to avoid?
-        st.download_button(
-        "Download results as .csv",
-        df_results.to_csv().encode('utf-8'),
-        "experiment_results.csv",
-        "text/csv",
-        key='download-csv'
-        )
+        scenarios = md.get_scenarios()
+        print(scenarios)
+        
+        with st.spinner('Running scenario analysis'):
+            # will only compute once... due to cache
+            results = run_experiments(scenarios, 5)
+            st.success('Done!')
+            df_results = md.scenario_summary_frame(results).round(1)
+            #with st.expander('Tabular Results', expanded=True):
 
 
+            st.table(df_results)
+            print(df_results.to_csv().encode('utf-8'))
+
+            # this removes the table above from the app - how to avoid?
+            st.download_button(
+            "Download results as .csv",
+            df_results.to_csv().encode('utf-8'),
+            "experiment_results.csv",
+            "text/csv",
+            key='download-csv'
+            )
+
+            # copy paste workaround for STREAMLIT Bug
+            # code based on https://discuss.streamlit.io/t/copy-dataframe-to-clipboard/2633
+            copy_button = Button(label="Copy results to clipboard")
+            copy_button.js_on_event("button_click", CustomJS(args=dict(df=df_results.to_csv(sep='\t')), code="""
+                navigator.clipboard.writeText(df);
+                """))
+                
+            no_event = streamlit_bokeh_events(
+                copy_button,
+                events="GET_TEXT",
+                key="get_text",
+                refresh_on_update=True,
+                override_height=75,
+                debounce_time=0)
+
+if __name__ == '__main__':
+    main()
 
 
     
