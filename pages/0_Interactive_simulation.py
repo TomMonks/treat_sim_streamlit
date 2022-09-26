@@ -1,9 +1,12 @@
+from contextlib import suppress
 import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import model as md
 from PIL import Image
+
+from more_plot import more_plot
 
 INFO_1 = '''**A simple simulation model of a urgent care and treatment centre.**'''
 INFO_1a = '''**Change the model parameters and rerun to see the effect on waiting times and 
@@ -32,6 +35,9 @@ SC_TABLE = '''
 | 6 | Scenario 5 + short exam | Scenario 5 changes + examination takes 4 mins less on average        |
 
 '''
+def show_more_plot(results, column='09_throughput'):
+    fig, ax = more_plot(results, column, suppress_warnings=True)
+    st.pyplot(fig)
 
 def get_arrival_chart():
     '''
@@ -123,7 +129,7 @@ with col1.expander('Treatment process', expanded=False):
     st.markdown(INFO_4)
 
 with col2.expander('Daily Arrival Pattern', expanded=False):
-    st.pyplot(get_arrival_chart())
+    st.pyplot(get_arrival_chart(), clear_figure=True)
 
 st.markdown(INFO_1a)
 
@@ -144,22 +150,18 @@ if st.button('Simulate treatment centre'):
     # Get results
     with st.spinner('Simulating the treatment centre...'):
         results = md.multiple_replications(args, n_reps = replications)
+        
     st.success('Done!')
-    st.table(results.mean().round(1))
-
-
-with st.expander('Pre-specified Scenarios', expanded=False):
-    st.markdown(INFO_2)
-    st.markdown(SC_TABLE)
-    if st.button('Run all scenarios and compare'):
-        scenarios = md.get_scenarios()
-        with st.spinner('Running scenario analysis'):
-            results = md.run_scenario_analysis(scenarios, 
-                                               md.DEFAULT_RESULTS_COLLECTION_PERIOD,
-                                               replications)
-            st.success('Done!')
-            st.table(md.scenario_summary_frame(results).round(1))
-
-
-
     
+    col1, col2 = st.columns(2)
+    with col1.expander('Tabular results', expanded=True):
+        summary_series = results.mean().round(1)
+        summary_series.name = 'Mean'
+        st.table(summary_series)
+
+    with col2.expander('MORE Plot', expanded=True):
+        more_fig, ax = more_plot(results, '09_throughput', x_label='Average Daily Throughput', 
+                                figsize=(15, 9), suppress_warnings=True)
+     
+        st.pyplot(more_fig, clear_figure=True)
+
