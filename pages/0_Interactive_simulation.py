@@ -154,12 +154,12 @@ if st.button('Simulate treatment centre'):
     st.success('Done!')
     
     col1, col2 = st.columns(2)
-    with col1.expander('Tabular results', expanded=False):
+    with col1.expander('Tabular results', expanded=True):
         summary_series = results.mean().round(1)
         summary_series.name = 'Mean'
         st.table(summary_series)
 
-    with col2.expander('MORE Plot', expanded=False):
+    with col2.expander('MORE Plot', expanded=True):
         more_fig, ax = more_plot(results, '09_throughput', x_label='Average Daily Throughput', 
                                 figsize=(15, 9), suppress_warnings=True)
      
