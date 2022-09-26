@@ -84,7 +84,7 @@ with st.sidebar:
    
     triage_bays = st.slider('Triage bays', 1, 5, md.DEFAULT_N_TRIAGE)
     exam_rooms = st.slider('Exam rooms', 1, 5, md.DEFAULT_N_EXAM)
-    treat_rooms = st.slider('Treatment cubicles', 1, 5, md.DEFAULT_N_CUBICLES_1, 
+    treat_rooms = st.slider('Non-Trauma Treatment cubicles', 1, 5, md.DEFAULT_N_CUBICLES_1, 
                             help='Set the number of non trauma pathway treatment cubicles')
 
     st.markdown('## Trauma Pathway') 
@@ -137,6 +137,7 @@ st.markdown(INFO_1a)
 args = md.Scenario()
 args.n_triage = triage_bays
 args.n_exam = exam_rooms
+args.n_cubicles_1 = treat_rooms
 args.treat_trauma_mean = trauma_mean
 args.treat_trauma_var = trauma_var
 args.nt_treat_prob = nontrauma_treat
