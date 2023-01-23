@@ -10,9 +10,6 @@ COPY . /app
 # pip install the requirements 
 RUN pip3 install -r requirements.txt
 
-# expose port 8989
-EXPOSE 8989
-
 # use streamlit by default
 ENTRYPOINT ["streamlit", "run"]
 
