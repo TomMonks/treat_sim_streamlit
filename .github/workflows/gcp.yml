@@ -8,7 +8,7 @@ jobs:
     name: Build and Push to GCP
     runs-on: ubuntu-latest
     env:
-      IMAGE_NAME: treat-sim
+      IMAGE_NAME: treatsim-streamlit
       PROJECT_ID: e-charger-380210
     steps:
     - name: Checkout
