@@ -10,8 +10,6 @@ import numpy as np
 import pandas as pd
 import warnings
 
-from pyrsistent import v
-
 def ci_for_sample_mean(mean_value, std, n, critical_value=1.96):
     '''Confidence interval for mean.  Assume std is sample std.
     
