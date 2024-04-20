@@ -5,7 +5,9 @@
 [![License: MIT](https://img.shields.io/badge/ORCID-0000--0001--5274--5037-brightgreen)](https://orcid.org/0000-0001-5274-5037)
 [![License: MIT](https://img.shields.io/badge/ORCID-0000--0003--2631--4481-brightgreen)](https://orcid.org/0000-0003-2631-4481)
 
-# Treatment Simulation Model deployed via Streamlit
+# 💫 Treatment Simulation Model deployed via Streamlit
+
+> 💫 Please note that this work has been merged into the [**S**haring **T**ools and **A**rtifacts for **R**eproducible **S**imulations (STARS) in healthcare project](https://github.com/pythonhealthdatascience).  A more up-to-date example of this app is available: https://github.com/pythonhealthdatascience/stars-streamlit-example 💫
 
 ## Overview
 
